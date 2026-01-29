@@ -1,0 +1,114 @@
+
+CREATE TABLE public.backups (
+  id uuid NOT NULL DEFAULT gen_random_uuid(),
+  backup_time timestamp with time zone NOT NULL DEFAULT now(),
+  status text NOT NULL,
+  details text,
+  CONSTRAINT backups_pkey PRIMARY KEY (id)
+);
+CREATE TABLE public.checkin_log (
+  id uuid NOT NULL DEFAULT gen_random_uuid(),
+  user_id uuid NOT NULL,
+  operation_id uuid NOT NULL,
+  checkin_time timestamp with time zone NOT NULL DEFAULT now(),
+  checkout_time timestamp with time zone,
+  terminal_id text,
+  notes text,
+  overnight boolean DEFAULT false,
+  role_on_checkin text,
+  checkout_note text,
+  CONSTRAINT checkin_log_pkey PRIMARY KEY (id),
+  CONSTRAINT checkin_log_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id),
+  CONSTRAINT checkin_log_operation_id_fkey FOREIGN KEY (operation_id) REFERENCES public.operations(id)
+);
+CREATE TABLE public.error_logs (
+  id uuid NOT NULL DEFAULT gen_random_uuid(),
+  error_time timestamp with time zone NOT NULL DEFAULT now(),
+  severity text NOT NULL,
+  message text NOT NULL,
+  details jsonb,
+  CONSTRAINT error_logs_pkey PRIMARY KEY (id)
+);
+CREATE TABLE public.kiosk_settings (
+  id uuid NOT NULL DEFAULT gen_random_uuid(),
+  kiosk_user_id uuid NOT NULL,
+  kiosk_mode text NOT NULL CHECK (kiosk_mode = ANY (ARRAY['check_in'::text, 'check_out'::text, 'meal'::text])),
+  updated_at timestamp with time zone DEFAULT now(),
+  terminal_id text,
+  CONSTRAINT kiosk_settings_pkey PRIMARY KEY (id),
+  CONSTRAINT kiosk_settings_kiosk_user_id_fkey FOREIGN KEY (kiosk_user_id) REFERENCES public.users(id)
+);
+CREATE TABLE public.kiosk_status (
+  terminal_id text NOT NULL,
+  last_heartbeat timestamp with time zone NOT NULL DEFAULT now(),
+  CONSTRAINT kiosk_status_pkey PRIMARY KEY (terminal_id)
+);
+CREATE TABLE public.meals_log (
+  id uuid NOT NULL DEFAULT gen_random_uuid(),
+  meal_type text NOT NULL CHECK (meal_type = ANY (ARRAY['Breakfast'::text, 'Lunch'::text, 'Dinner'::text])),
+  quantity integer NOT NULL DEFAULT 1,
+  served_at timestamp with time zone DEFAULT now(),
+  terminal_id text,
+  notes text,
+  operation_id uuid,
+  user_id uuid,
+  CONSTRAINT meals_log_pkey PRIMARY KEY (id),
+  CONSTRAINT meals_log_operation_id_fkey FOREIGN KEY (operation_id) REFERENCES public.operations(id),
+  CONSTRAINT meals_log_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id)
+);
+CREATE TABLE public.operations (
+  id uuid NOT NULL DEFAULT gen_random_uuid(),
+  category text NOT NULL CHECK (category = ANY (ARRAY['blue'::text, 'gray'::text])),
+  name text NOT NULL,
+  description text,
+  is_active boolean DEFAULT true,
+  created_at timestamp with time zone DEFAULT now(),
+  start_date date,
+  end_date date,
+  start_time character varying,
+  end_time character varying,
+  is_visible boolean DEFAULT true,
+  is_recurring boolean NOT NULL DEFAULT false,
+  recurrence_type text NOT NULL CHECK (recurrence_type = ANY (ARRAY['one_time'::text, 'daily'::text, 'weekly'::text, 'monthly'::text])),
+  recurrence_config jsonb,
+  recurrence_end_date date,
+  CONSTRAINT operations_pkey PRIMARY KEY (id)
+);
+CREATE TABLE public.qr_tokens (
+  id uuid NOT NULL DEFAULT gen_random_uuid(),
+  user_id uuid NOT NULL,
+  token text NOT NULL UNIQUE,
+  expires_at timestamp with time zone,
+  created_at timestamp with time zone NOT NULL DEFAULT now(),
+  operation_id uuid,
+  CONSTRAINT qr_tokens_pkey PRIMARY KEY (id),
+  CONSTRAINT qr_tokens_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id),
+  CONSTRAINT qr_tokens_operation_id_fkey FOREIGN KEY (operation_id) REFERENCES public.operations(id)
+);
+CREATE TABLE public.system_settings (
+  id uuid NOT NULL DEFAULT gen_random_uuid(),
+  mode text NOT NULL DEFAULT 'blue'::text CHECK (mode = ANY (ARRAY['blue'::text, 'gray'::text])),
+  updated_at timestamp with time zone DEFAULT now(),
+  CONSTRAINT system_settings_pkey PRIMARY KEY (id)
+);
+CREATE TABLE public.system_sync_log (
+  id uuid NOT NULL DEFAULT gen_random_uuid(),
+  sync_time timestamp with time zone NOT NULL DEFAULT now(),
+  status text NOT NULL,
+  details text,
+  CONSTRAINT system_sync_log_pkey PRIMARY KEY (id)
+);
+CREATE TABLE public.users (
+  id uuid NOT NULL DEFAULT gen_random_uuid(),
+  email text UNIQUE,
+  phone text,
+  employer text,
+  role text NOT NULL DEFAULT 'responder'::text,
+  credential_level text,
+  created_at timestamp with time zone NOT NULL DEFAULT now(),
+  photo_url text,
+  is_active boolean NOT NULL DEFAULT true,
+  first_name text NOT NULL,
+  last_name text NOT NULL,
+  CONSTRAINT users_pkey PRIMARY KEY (id)
+);

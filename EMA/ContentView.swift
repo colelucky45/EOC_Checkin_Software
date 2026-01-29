@@ -1,8 +1,8 @@
 //
 //  ContentView.swift
-//  EMA
+//  EMACheckIn
 //
-//  Created by Cole Lucky on 12/21/25.
+//  Created by Cole Lucky on 12/11/25.
 //
 
 import SwiftUI

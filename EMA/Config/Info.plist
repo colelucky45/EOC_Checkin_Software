@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
+  "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+
+    <!-- REQUIRED: bundle identity -->
+    <key>CFBundleIdentifier</key>
+    <string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+
+    <!-- REQUIRED: executable -->
+    <key>CFBundleExecutable</key>
+    <string>$(EXECUTABLE_NAME)</string>
+
+    <!-- App name (short version for home screen) -->
+    <key>CFBundleDisplayName</key>
+    <string>EOC Check-In</string>
+
+    <!-- Full app name -->
+    <key>CFBundleName</key>
+    <string>EOC Check-In System</string>
+
+    <!-- Camera access -->
+    <key>NSCameraUsageDescription</key>
+    <string>This app uses the camera to scan QR codes for check-in.</string>
+
+    <!-- Optional but safe -->
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>This app may temporarily access image data while scanning QR codes.</string>
+
+    <!-- Launch Screen -->
+    <key>UILaunchScreen</key>
+    <dict>
+        <key>UIColorName</key>
+        <string>LaunchScreenBackground</string>
+        <key>UIImageName</key>
+        <string>LaunchScreenIcon</string>
+    </dict>
+
+    <!-- iPad-specific: Require full screen for kiosk mode -->
+    <key>UIRequiresFullScreen</key>
+    <true/>
+
+    <!-- Supported interface orientations -->
+    <key>UISupportedInterfaceOrientations</key>
+    <array>
+        <string>UIInterfaceOrientationPortrait</string>
+        <string>UIInterfaceOrientationLandscapeLeft</string>
+        <string>UIInterfaceOrientationLandscapeRight</string>
+    </array>
+
+    <key>UISupportedInterfaceOrientations~ipad</key>
+    <array>
+        <string>UIInterfaceOrientationPortrait</string>
+        <string>UIInterfaceOrientationPortraitUpsideDown</string>
+        <string>UIInterfaceOrientationLandscapeLeft</string>
+        <string>UIInterfaceOrientationLandscapeRight</string>
+    </array>
+
+</dict>
+</plist>
