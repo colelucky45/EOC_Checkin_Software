@@ -32,3 +32,7 @@ GoogleService-Info.plist
 
 # Logs
 *.log
+
+# App config that may contain secrets
+EMA/Config/SupabaseConfig.plist
+EMA/Config/BackendConfig.plist
